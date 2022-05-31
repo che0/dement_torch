@@ -16,7 +16,8 @@ make
 Usage:
 
 ```
-THREADS=20 REQUESTS=200 SLEEP_MS=1000 TIMEOUT_SEC=30 CONNECT_TIMEOUT_SEC=5 URL=https://localhost:42/foo.jpg SKIP_200=1 ./dement_torch
+THREADS=20 REQUESTS=200 SLEEP_MS=1000 TIMEOUT_SEC=30 CONNECT_TIMEOUT_SEC=5 \
+    URL=https://localhost:42/foo.jpg SKIP_200=1 ./dement_torch
 ```
 
 Env variables:
