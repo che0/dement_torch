@@ -125,8 +125,10 @@ void * worker_thread(void * config_v) {
     for (unsigned int i = 0; i < config->requests; i++) {
         do_one_request(config);
         
-        int sleep_time_us = random() % (config->sleep_ms * 1000);
-        usleep(sleep_time_us);
+        if (config->sleep_ms > 0) {
+            int sleep_time_us = random() % (config->sleep_ms * 1000);
+            usleep(sleep_time_us);
+        }
     }
     
     return NULL;
