@@ -46,12 +46,12 @@ struct config {
 };
 
 
-static size_t blackhole_write_callback(__attribute__((unused)) char *ptr, size_t size, size_t nmemb, __attribute__((unused)) void *userdata) {
+size_t blackhole_callback(__attribute__((unused)) char *ptr, size_t size, size_t nmemb, __attribute__((unused)) void *userdata) {
     return size * nmemb;
 }
 
 
-static void put_time(char * buf, size_t bufsize) {
+void put_time(char * buf, size_t bufsize) {
     struct tm cur_tm;
     time_t cur_ts = time(NULL);
     localtime_r(&cur_ts, &cur_tm);
@@ -61,44 +61,6 @@ static void put_time(char * buf, size_t bufsize) {
     }
 }
 
-static int has_prefix(const char * string, size_t size, const char * prefix_to_check)
-{
-    int prefix_len = strlen(prefix_to_check);
-    if ((int)size < prefix_len) {
-        return 0;
-    }
-    
-    return !strncmp(string, prefix_to_check, prefix_len);
-}
-
-
-struct connect_status {
-    int tcp_connected;
-    int tls_connected;
-};
-
-
-static int debug_callback(__attribute__((unused)) CURL *handle, curl_infotype type,
-                          char *data, size_t size, void *userptr) {
-    struct connect_status * connect_status = (struct connect_status *)userptr;
-    
-    if (type != CURLINFO_TEXT) {
-        return CURLE_OK;
-    }
-    
-    if (has_prefix(data, size, "Connected to "))
-    {
-        connect_status->tcp_connected = 1;
-    }
-    
-    if (has_prefix(data, size, "SSL connection using "))
-    {
-        connect_status->tls_connected = 1;
-    }
-    
-    return CURLE_OK;
-}
-
 
 void do_one_request(const struct config * config) {
     CURL *curl;
@@ -106,14 +68,7 @@ void do_one_request(const struct config * config) {
     curl_easy_setopt(curl, CURLOPT_URL, config->url);
     curl_easy_setopt(curl, CURLOPT_TIMEOUT, (long)config->timeout_sec);
     curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, (long)config->connect_timeout_sec);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, blackhole_write_callback);
-    
-    struct connect_status connect_status = {
-        .tcp_connected = 0, .tls_connected = 0
-    };
-    curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, debug_callback);
-    curl_easy_setopt(curl, CURLOPT_DEBUGDATA, &connect_status);
-    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, blackhole_callback);
     
     char error_buf[CURL_ERROR_SIZE];
     curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, error_buf);
@@ -127,8 +82,7 @@ void do_one_request(const struct config * config) {
     
     if (cret != CURLE_OK)
     {
-        printf("%s FAIL tcp %d tls %d: %s\n", time_str,
-               connect_status.tcp_connected, connect_status.tls_connected, error_buf);
+        printf("%s FAIL: %s\n", time_str, error_buf);
         goto finish;
     }
     
