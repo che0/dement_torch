@@ -43,6 +43,7 @@ struct config {
     unsigned int timeout_sec;
     unsigned int connect_timeout_sec;
     int skip_200;
+    const char * status_field_name;
 };
 
 
@@ -98,7 +99,8 @@ void do_one_request(const struct config * config) {
     
     if (cret != CURLE_OK)
     {
-        printf("{\"asctime\":\"%s\",\"status_code\":599,\"message\":\"%s\"}\n", time_str, strip_quotes(error_buf));
+        printf("{\"asctime\":\"%s\",\"%s\":599,\"message\":\"%s\"}\n",
+               time_str, config->status_field_name, strip_quotes(error_buf));
         goto finish;
     }
     
@@ -124,9 +126,9 @@ void do_one_request(const struct config * config) {
     }
     
     if ((response_code != 200) || (!config->skip_200)) {
-        printf("{\"asctime\":\"%s\",\"status_code\":%ld,\"downloaded_bytes\":%" CURL_FORMAT_CURL_OFF_T ","
+        printf("{\"asctime\":\"%s\",\"%s\":%ld,\"downloaded_bytes\":%" CURL_FORMAT_CURL_OFF_T ","
             "\"connect_time_ms\":%" CURL_FORMAT_CURL_OFF_T ",\"total_time_ms\":%" CURL_FORMAT_CURL_OFF_T "}\n",
-            time_str, response_code, downloaded_bytes,
+            time_str, config->status_field_name, response_code, downloaded_bytes,
             total_time_us / 1000, connect_time_us / 1000);
     }
     
@@ -160,6 +162,7 @@ int main() {
     config.timeout_sec = get_number("TIMEOUT_SEC");
     config.connect_timeout_sec = get_number("CONNECT_TIMEOUT_SEC");
     config.skip_200 = !!get_number("SKIP_200");
+    config.status_field_name = getenv("STATUS_FIELD") ?: "status_code";
     
     curl_global_init(CURL_GLOBAL_ALL);
     pthread_t thread[config.thread_count];

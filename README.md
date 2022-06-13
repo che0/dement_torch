@@ -55,3 +55,4 @@ Env variables:
 * CONNECT_TIMEOUT_SEC -- connect timeout in seconds
 * URL -- well, the URL
 * SKIP_200 -- 0|1, if printout should skip responses with status 200
+* STATUS_FIELD -- name of JSON field with status code (optional, default is "status_code")
