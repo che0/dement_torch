@@ -52,13 +52,29 @@ size_t blackhole_callback(__attribute__((unused)) char *ptr, size_t size, size_t
 
 
 void put_time(char * buf, size_t bufsize) {
+    struct timespec cur_ts;
+    clock_gettime(CLOCK_REALTIME, &cur_ts);
+    
     struct tm cur_tm;
-    time_t cur_ts = time(NULL);
-    localtime_r(&cur_ts, &cur_tm);
-    int ret = strftime(buf, bufsize, "%Y-%m-%d %H:%M:%S", &cur_tm);
+    localtime_r(&cur_ts.tv_sec, &cur_tm);
+    
+    char seconds_str[64];
+    int ret = strftime(seconds_str, sizeof(seconds_str), "%Y-%m-%d %H:%M:%S", &cur_tm);
     if (ret == 0) {
         snprintf(buf, bufsize, "FAIL");
+        return;
     }
+    
+    snprintf(buf, bufsize, "%s,%03ld", seconds_str, cur_ts.tv_nsec / 1000000);
+}
+
+
+/// returns string with double quotes changed to single (alters original)
+char * strip_quotes(char * buf) {
+    for (char * cur_byte = buf; *cur_byte != '\0'; cur_byte++) {
+        if (*cur_byte == '"') { *cur_byte = '\''; }
+    }
+    return buf;
 }
 
 
@@ -82,7 +98,7 @@ void do_one_request(const struct config * config) {
     
     if (cret != CURLE_OK)
     {
-        printf("%s FAIL: %s\n", time_str, error_buf);
+        printf("{\"asctime\":\"%s\",\"status_code\":599,\"message\":\"%s\"}\n", time_str, strip_quotes(error_buf));
         goto finish;
     }
     
@@ -108,8 +124,8 @@ void do_one_request(const struct config * config) {
     }
     
     if ((response_code != 200) || (!config->skip_200)) {
-        printf("%s status %ld, downloaded %" CURL_FORMAT_CURL_OFF_T " bytes, "
-            "connect %" CURL_FORMAT_CURL_OFF_T " ms, total %" CURL_FORMAT_CURL_OFF_T " ms\n",
+        printf("{\"asctime\":\"%s\",\"status_code\":%ld,\"downloaded_bytes\":%" CURL_FORMAT_CURL_OFF_T ","
+            "\"connect_time_ms\":%" CURL_FORMAT_CURL_OFF_T ",\"total_time_ms\":%" CURL_FORMAT_CURL_OFF_T "}\n",
             time_str, response_code, downloaded_bytes,
             total_time_us / 1000, connect_time_us / 1000);
     }
