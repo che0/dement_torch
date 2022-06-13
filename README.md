@@ -8,6 +8,7 @@ Screenshot:
 ```
 $ THREADS=2 REQUESTS=4 SLEEP_MS=100 TIMEOUT_SEC=30 CONNECT_TIMEOUT_SEC=5 \
     URL=https://localhost:42/foo.jpg SKIP_200=0 ./dement_torch
+{"asctime":"2022-06-13 12:01:44,147","message":"Starting with THREADS=2 REQUESTS=4 SLEEP_MS=100 URL=https://localhost:42/foo.jpg TIMEOUT_SEC=30 CONNECT_TIMEOUT_SEC=5 SKIP_200=0 STATUS_FIELD=status_code"}
 {"asctime":"2022-06-13 12:01:44,156","status_code":200,"downloaded_bytes":82447,"connect_time_ms":225,"total_time_ms":6}
 {"asctime":"2022-06-13 12:01:44,260","status_code":200,"downloaded_bytes":81953,"connect_time_ms":229,"total_time_ms":6}
 {"asctime":"2022-06-13 12:01:44,339","status_code":200,"downloaded_bytes":82442,"connect_time_ms":190,"total_time_ms":5}

@@ -164,6 +164,13 @@ int main() {
     config.skip_200 = !!get_number("SKIP_200");
     config.status_field_name = getenv("STATUS_FIELD") ?: "status_code";
     
+    char time_str[64];
+    put_time(time_str, sizeof(time_str));
+    printf("{\"asctime\":\"%s\",\"message\":\"Starting with THREADS=%u REQUESTS=%u SLEEP_MS=%u"
+           " URL=%s TIMEOUT_SEC=%u CONNECT_TIMEOUT_SEC=%u SKIP_200=%d STATUS_FIELD=%s\"}\n",
+           time_str, config.thread_count, config.requests, config.sleep_ms, config.url,
+           config.timeout_sec, config.connect_timeout_sec, config.skip_200, config.status_field_name);
+    
     curl_global_init(CURL_GLOBAL_ALL);
     pthread_t thread[config.thread_count];
     
@@ -185,7 +192,6 @@ int main() {
     
     curl_global_cleanup();
     
-    char time_str[64];
     put_time(time_str, sizeof(time_str));
     printf("{\"asctime\":\"%s\",\"message\":\"Run complete.\"}\n", time_str);
     return 0;
