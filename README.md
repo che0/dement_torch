@@ -6,27 +6,17 @@ dement_torch is a really primitive HTTP connection/request testing tool
 Screenshot:
 
 ```
-$ THREADS=20 REQUESTS=200 SLEEP_MS=100 TIMEOUT_SEC=30 CONNECT_TIMEOUT_SEC=5 \
+$ THREADS=2 REQUESTS=4 SLEEP_MS=100 TIMEOUT_SEC=30 CONNECT_TIMEOUT_SEC=5 \
     URL=https://localhost:42/foo.jpg SKIP_200=0 ./dement_torch
-2022-05-31 21:13:12 status 200, downloaded 4651 bytes, connect 81 ms, total 11 ms
-2022-05-31 21:13:12 status 200, downloaded 4651 bytes, connect 84 ms, total 12 ms
-2022-05-31 21:13:12 status 200, downloaded 4651 bytes, connect 87 ms, total 12 ms
-2022-05-31 21:13:12 status 200, downloaded 4651 bytes, connect 89 ms, total 11 ms
-2022-05-31 21:13:12 status 200, downloaded 4651 bytes, connect 89 ms, total 12 ms
-2022-05-31 21:13:12 FAIL: Failed to connect to localhost port 42 after 0 ms: Connection refused
-2022-05-31 21:13:12 FAIL: Failed to connect to localhost port 42 after 0 ms: Connection refused
-2022-05-31 21:13:13 FAIL: Failed to connect to localhost port 42 after 0 ms: Connection refused
-2022-05-31 21:13:13 FAIL: Failed to connect to localhost port 42 after 0 ms: Connection refused
-2022-05-31 21:13:13 FAIL: Failed to connect to localhost port 42 after 0 ms: Connection refused
-2022-05-31 21:13:13 FAIL: Failed to connect to localhost port 42 after 0 ms: Connection refused
-2022-05-31 21:13:13 FAIL: Failed to connect to localhost port 42 after 0 ms: Connection refused
-2022-05-31 21:13:13 FAIL: Failed to connect to localhost port 42 after 0 ms: Connection refused
-2022-05-31 21:13:13 FAIL: Failed to connect to localhost port 42 after 0 ms: Connection refused
-2022-05-31 21:13:14 FAIL: Failed to connect to localhost port 42 after 0 ms: Connection refused
-2022-05-31 21:13:14 FAIL: Failed to connect to localhost port 42 after 0 ms: Connection refused
-2022-05-31 21:13:14 FAIL: Failed to connect to localhost port 42 after 0 ms: Connection refused
-2022-05-31 21:13:14 FAIL: Failed to connect to localhost port 42 after 0 ms: Connection refused
-2022-05-31 21:13:14 Run complete.
+{"asctime":"2022-06-13 12:01:44,156","status_code":200,"downloaded_bytes":82447,"connect_time_ms":225,"total_time_ms":6}
+{"asctime":"2022-06-13 12:01:44,260","status_code":200,"downloaded_bytes":81953,"connect_time_ms":229,"total_time_ms":6}
+{"asctime":"2022-06-13 12:01:44,339","status_code":200,"downloaded_bytes":82442,"connect_time_ms":190,"total_time_ms":5}
+{"asctime":"2022-06-13 12:01:44,446","status_code":200,"downloaded_bytes":81863,"connect_time_ms":110,"total_time_ms":5}
+{"asctime":"2022-06-13 12:01:44,607","status_code":599,"message":"Failed to connect to localhost port 42 after 0 ms: Connection refused"}
+{"asctime":"2022-06-13 12:01:44,610","status_code":599,"message":"Failed to connect to localhost port 42 after 0 ms: Connection refused"}
+{"asctime":"2022-06-13 12:01:44,649","status_code":599,"message":"Failed to connect to localhost port 42 after 0 ms: Connection refused"}
+{"asctime":"2022-06-13 12:01:44,656","status_code":599,"message":"Failed to connect to localhost port 42 after 0 ms: Connection refused"}
+{"asctime":"2022-06-13 12:03:44,941","message":"Run complete."}
 ```
 
 Dependencies:

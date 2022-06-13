@@ -187,6 +187,6 @@ int main() {
     
     char time_str[64];
     put_time(time_str, sizeof(time_str));
-    printf("%s Run complete.\n", time_str);
+    printf("{\"asctime\":\"%s\",\"message\":\"Run complete.\"}\n", time_str);
     return 0;
 }
